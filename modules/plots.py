@@ -2,23 +2,20 @@ import streamlit as st
 import plotly.express as px
 
 
+
 # ============================================================
 #   TAB 1 — CHOROPLETH MAP
 # ============================================================
-def render_choropleth_tab(gdf_merged, geojson):
+def render_choropleth_tab(df, geojson):
     """
     Renders the choropleth salary map tab.
-    Handles:
-    - UI controls (year + salary type)
-    - Filtering
-    - Building Plotly mapbox figure
-    - Rendering inside Streamlit
+    Uses df + geojson only (no GeoPandas).
     """
-    
-    st.title("Swedish Municipal Salary Map (2007–2024) 🇸🇪")
+
+    st.title("Swedish Municipal Salary Map (2007-2024) 🇸🇪")
 
     # ---- Controls ----
-    years = sorted(gdf_merged["year"].unique())
+    years = sorted(df["year"].unique())
     default_year = max(years)
 
     col1, col2 = st.columns([3, 1])
@@ -42,22 +39,22 @@ def render_choropleth_tab(gdf_merged, geojson):
         )
 
     # ---- Filter ----
-    df_year = gdf_merged[gdf_merged["year"] == year_selected]
+    df_year = df[df["year"] == year_selected].copy()
 
     # ---- Plot ----
     fig = px.choropleth_mapbox(
         df_year,
         geojson=geojson,
-        locations="Municipality",
-        featureidkey="properties.Municipality",
+        locations="mun",                     # KEY IN YOUR DF
+        featureidkey="properties.Mun Code",  # MATCHES GEOJSON
         color=variable,
-        hover_name="Municipality",
+        hover_name="municipality",
         hover_data={
             "total": True,
             "men": True,
             "women": True,
             "year": True,
-            "Mun Code": False,
+            "mun": True,
         },
         mapbox_style="carto-positron",
         zoom=3.8,
@@ -68,7 +65,7 @@ def render_choropleth_tab(gdf_merged, geojson):
 
     fig.update_layout(
         height=700,
-        margin={"r":0, "t":0, "l":0, "b":0},
+        margin={"r": 0, "t": 0, "l": 0, "b": 0},
     )
 
     # ---- Render ----

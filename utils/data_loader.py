@@ -1,15 +1,14 @@
 # utils/data_loader.py
-import pandas as pd
-import geopandas as gpd
-import json
 import os
+import json
+import pandas as pd
 import streamlit as st
 
 # --- Base data path ---
 BASE_PATH = "/Users/axelcajselius/Documents/GitHub/nordregio_streamlit_app/data"
 
 
-# --- Load CSV salaries ---
+# --- Load salary CSV ---
 @st.cache_data
 def load_salaries(filename: str = "avg_salaries_se.csv") -> pd.DataFrame:
     """
@@ -18,27 +17,23 @@ def load_salaries(filename: str = "avg_salaries_se.csv") -> pd.DataFrame:
     """
     path = os.path.join(BASE_PATH, filename)
     df = pd.read_csv(path)
+
+    # Ensure mun column is string (important for matching)
+    df["mun"] = df["mun"].astype(str)
+
     return df
 
 
-# --- Load GeoPackage or GeoJSON as GeoDataFrame ---
-def load_geodata(filename: str = "nordics.gpkg") -> gpd.GeoDataFrame:
+# --- Load GeoJSON without GeoPandas ---
+@st.cache_data
+def load_geojson(filename: str = "nordics.geojson"):
     """
-    Load a geospatial file (GeoPackage or GeoJSON) as a GeoDataFrame.
-    NOT cached — GeoDataFrames are unhashable in Streamlit.
+    Load a GeoJSON file using json.load.
+    Returns the raw GeoJSON dict.
     """
     path = os.path.join(BASE_PATH, filename)
-    gdf = gpd.read_file(path)
-    geojson = json.loads(gdf.to_json())
-    return gdf, geojson
+    with open(path, "r") as f:
+        geojson = json.load(f)
 
+    return geojson
 
-# --- Merge salaries with GeoDataFrame ---
-def merge_salaries_geo(gdf: gpd.GeoDataFrame, df: pd.DataFrame,
-                       key_gdf: str = "Mun Code", key_df: str = "mun") -> gpd.GeoDataFrame:
-    """
-    Merge salaries DataFrame with GeoDataFrame.
-    NOT cached — uses a GeoDataFrame argument (unhashable).
-    """
-    merged = gdf.merge(df, left_on=key_gdf, right_on=key_df, how="inner")
-    return merged

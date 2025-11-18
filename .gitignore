@@ -1,3 +1,6 @@
+# hide secrets
+.streamlit/secrets.toml
+
 # Mac files
 .DS_Store
 **/.DS_Store
