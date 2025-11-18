@@ -5,7 +5,9 @@ import pandas as pd
 import streamlit as st
 
 # --- Base data path ---
-BASE_PATH = "/Users/axelcajselius/Documents/GitHub/nordregio_streamlit_app/data"
+BASE_PATH = os.path.join(os.path.dirname(__file__), "..", "data")
+BASE_PATH = os.path.abspath(BASE_PATH)
+
 
 
 # --- Load salary CSV ---
