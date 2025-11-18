@@ -3,9 +3,9 @@
 [theme]
 base = "light"
 primaryColor = "#70a2e1"
-backgroundColor = "#FFF4D5"
-secondaryBackgroundColor = "#f4f6f8"
-textColor = "#383030"
-font = "sans serif"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#bbbcbcff"
+textColor = "#343434ff"
+font = "helvetica neue"
 
 

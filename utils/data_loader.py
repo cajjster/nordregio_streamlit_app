@@ -42,11 +42,3 @@ def merge_salaries_geo(gdf: gpd.GeoDataFrame, df: pd.DataFrame,
     """
     merged = gdf.merge(df, left_on=key_gdf, right_on=key_df, how="inner")
     return merged
-
-
-df = load_salaries()
-print(df.head())
-gdf, geojson = load_geodata("nordics.gpkg")  # or .geojson
-print(gdf.head)
-gdf_merged = merge_salaries_geo(gdf, df)
-print(gdf_merged.head())
